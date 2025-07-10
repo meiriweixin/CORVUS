@@ -64,9 +64,8 @@ export const Sidebar = ({
                   onClick={item.onClick}
                   className={`w-full flex items-center p-3 lg:px-4 rounded-xl transition-all duration-200 ${
                     item.active 
-                      ? 'bg-white/10 text-white border border-white/20 shadow-lg' 
-                      : 'text-gray-400 hover:bg-white/5 hover:text-white hover:border hover:border-white/10'
-                  }`}
+                      ? 'bg-white/10 text-white shadow-lg' 
+                      : 'text-gray-400 hover:bg-white/10 hover:text-white hover:shadow-lg hover:scale-[1.04] hover:translate-x-1 transition-all duration-200'                  }`}
                 >
                   <span className="flex items-center justify-center">
                     {item.icon}
