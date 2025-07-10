@@ -41,7 +41,7 @@ export const URLInput: React.FC<URLInputProps> = ({
   return <div className="flex flex-col items-center justify-center py-12">
       <div className="w-full max-w-3xl">
         <div className="bg-gray-800/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+          <h2 className="text-2xl font-bold mb-6 text-center text-white tracking-tight">
             Cyber Intelligence Crawler
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">

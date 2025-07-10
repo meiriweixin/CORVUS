@@ -1,0 +1,39 @@
+{
+  "name": "mis2-backend",
+  "version": "1.0.0",
+  "description": "Backend server for MIS2 Cyber Threat Intelligence Crawler",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "crawlee": "^3.13.9",
+    "express": "^4.18.2",
+    "socket.io": "^4.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.1",
+    "axios": "^1.6.7",
+    "openai": "^4.68.4",
+    "playwright": "^1.53.2",
+    "mime-types": "^2.1.35",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/uuid": "^9.0.7",
+    "@types/mime-types": "^2.1.4",
+    "@types/node": "^20.10.4",
+    "@types/pg": "^8.10.9",
+    "typescript": "^5.3.3",
+    "tsx": "^4.6.2",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
