@@ -70,69 +70,19 @@ export const ForceDirectedChart: React.FC<ForceDirectedChartProps> = ({
       nodePadding: 5
     }));
 
-    // Configure node styling based on nodeType
-    series.nodes.template.setup = function(target) {
-      const dataItem = target.dataItem;
-      if (dataItem) {
-        const nodeType = dataItem.get("nodeType");
-        const circle = target.get("circle");
-        
-        if (circle) {
-          switch (nodeType) {
-            case 'article':
-              circle.set("fill", am5.color("#3B82F6")); // Blue
-              circle.set("stroke", am5.color("#1E40AF")); // Darker blue border
-              break;
-            case 'actor':
-              circle.set("fill", am5.color("#EF4444")); // Red
-              circle.set("stroke", am5.color("#B91C1C")); // Darker red border
-              break;
-            case 'victim':
-              circle.set("fill", am5.color("#F59E0B")); // Orange
-              circle.set("stroke", am5.color("#D97706")); // Darker orange border
-              break;
-            case 'event':
-              circle.set("fill", am5.color("#10B981")); // Green
-              circle.set("stroke", am5.color("#047857")); // Darker green border
-              break;
-            case 'theme':
-              circle.set("fill", am5.color("#8B5CF6")); // Purple
-              circle.set("stroke", am5.color("#7C3AED")); // Darker purple border
-              break;
-            default:
-              circle.set("fill", am5.color("#6B7280")); // Gray
-              circle.set("stroke", am5.color("#4B5563")); // Darker gray border
-          }
-          
-          // Enhanced styling
-          circle.set("strokeWidth", 3);
-          circle.set("strokeOpacity", 0.8);
-          circle.set("fillOpacity", 0.9);
-          
-          // Add gradient effect for root nodes
-          if (dataItem.get("depth") === 0) {
-            circle.set("strokeWidth", 4);
-            circle.set("stroke", am5.color("#FFFFFF"));
-          }
-        }
-      }
-    };
+    // Configure basic series appearance
+    series.get("colors")?.set("colors", [
+      am5.color("#3B82F6"), // Blue for articles
+      am5.color("#EF4444"), // Red for actors  
+      am5.color("#F59E0B"), // Orange for victims
+      am5.color("#10B981"), // Green for events
+      am5.color("#8B5CF6"), // Purple for themes
+      am5.color("#6B7280")  // Gray default
+    ]);
 
-    // Configure labels
-    series.nodes.template.get("label")?.setAll({
-      text: "{name}",
-      textAlign: "center",
-      centerY: 0,
-      centerX: am5.percent(50),
-      fontSize: "11px",
-      fontWeight: "600",
-      fill: am5.color("#FFFFFF"),
-      maxWidth: 100,
-      oversizedBehavior: "wrap",
-      shadowColor: am5.color("#000000"),
-      shadowOpacity: 0.8,
-      shadowOffsetX: 1,
-      shadowOffsetY: 1
+    // Configure node appearance using the graphics property
+    series.nodes.template.setAll({
+      tooltipText: "{name}"
     });
 
     // Configure links styling
@@ -181,24 +131,9 @@ export const ForceDirectedChart: React.FC<ForceDirectedChartProps> = ({
       }
     };
 
-    // Add interactivity
-    series.nodes.template.onPrivate("circle", function(circle) {
-      if (circle) {
-        circle.onPrivate("radius", function(radius) {
-          if (radius && radius > 0) {
-            circle.set("stroke", am5.color("#FFFFFF"));
-            circle.set("strokeWidth", 2);
-            circle.set("strokeOpacity", 0.8);
-          }
-        });
-
-        // Hover states
-        circle.states.create("hover", {
-          strokeWidth: 3,
-          strokeOpacity: 1,
-          scale: 1.1
-        });
-      }
+    // Add simple hover states
+    series.nodes.template.states.create("hover", {
+      scale: 1.1
     });
 
     // Set data
