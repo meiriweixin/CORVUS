@@ -208,7 +208,7 @@ const countryCodeMap: { [key: string]: string } = {
   'SD': 'SD', 'SR': 'SR', 'SJ': 'SJ', 'SZ': 'SZ', 'SE': 'SE', 'CH': 'CH', 'SY': 'SY', 'TW': 'TW',
   'TJ': 'TJ', 'TZ': 'TZ', 'TH': 'TH', 'TL': 'TL', 'TG': 'TG', 'TK': 'TK', 'TO': 'TO', 'TT': 'TT',
   'TN': 'TN', 'TR': 'TR', 'TM': 'TM', 'TC': 'TC', 'TV': 'TV', 'UG': 'UG', 'UA': 'UA', 'AE': 'AE',
-  'GB': 'GB', 'US': 'US', 'UM': 'UM', 'UY': 'UY', 'UZ': 'UZ', 'VU': 'VU', 'VE': 'VE', 'VN': 'VN',
+  'GB': 'GB',  'UM': 'UM', 'UY': 'UY', 'UZ': 'UZ', 'VU': 'VU', 'VE': 'VE', 'VN': 'VN',
   'VG': 'VG', 'VI': 'VI', 'WF': 'WF', 'EH': 'EH', 'YE': 'YE', 'ZM': 'ZM', 'ZW': 'ZW'
 };
 

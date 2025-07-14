@@ -12,6 +12,7 @@ import {
   TrendingUpIcon,
   AlertTriangleIcon
 } from 'lucide-react';
+import { ButtonColorful } from '@/components/ui/button-colorful';
 
 interface ChatMessage {
   id: string;
@@ -498,18 +499,19 @@ export const Chat: React.FC = () => {
               className="w-full px-4 py-3 bg-gray-700/50 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400 disabled:opacity-50"
             />
           </div>
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl text-white font-medium transition-all flex items-center space-x-2"
-          >
-            {isLoading ? (
-              <LoaderIcon size={18} className="animate-spin" />
-            ) : (
-              <SendIcon size={18} />
-            )}
-            <span className="hidden sm:block">Send</span>
-          </button>
+          {isLoading ? (
+            <div className="flex items-center space-x-2 px-6 py-3">
+              <LoaderIcon size={18} className="animate-spin text-white" />
+              <span className="hidden sm:block text-white font-medium">Send</span>
+            </div>
+          ) : (
+            <ButtonColorful
+              type="submit"
+              disabled={!input.trim()}
+              label="Send"
+              className="px-6 py-3"
+            />
+          )}
         </form>
         
         <div className="mt-2 text-xs text-gray-500 text-center">

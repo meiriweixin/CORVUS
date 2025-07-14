@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { URLInputProps, CrawlConfig } from '../types/crawling';
 import { crawlerService } from '../services/websocketService';
+import { ButtonColorful } from '@/components/ui/button-colorful';
 
 interface PredefinedSite {
   id: string;
@@ -529,27 +530,19 @@ export const EnhancedURLInput: React.FC<URLInputProps> = ({ onSubmit, isLoading 
 
             {/* Submit Button */}
             <div className="flex justify-center pt-4">
-              <button
-                type="submit"
-                disabled={!canSubmit}
-                className={`px-8 py-4 rounded-xl text-white font-medium flex items-center justify-center space-x-3 transition-all duration-200 shadow-lg ${
-                  canSubmit
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:shadow-blue-500/20'
-                    : 'bg-gray-600 cursor-not-allowed opacity-50'
-                }`}
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Crawling in Progress...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Start Advanced Crawl</span>
-                    <ArrowRightIcon size={18} />
-                  </>
-                )}
-              </button>
+              {isLoading ? (
+                <div className="flex items-center space-x-3 px-8 py-4">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="text-white font-medium">Crawling in Progress...</span>
+                </div>
+              ) : (
+                <ButtonColorful
+                  type="submit"
+                  disabled={!canSubmit}
+                  label="Start Advanced Crawl"
+                  className="px-8 py-4"
+                />
+              )}
             </div>
           </form>
           

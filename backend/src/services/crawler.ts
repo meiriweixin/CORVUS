@@ -1045,13 +1045,15 @@ Return ONLY a JSON array of results, no other text.`;
           const { fullText, publishedDate } = await this.extractFullTextFromUrl(originalItem.url);
           
           // Enhanced published date extraction using AI
-          let finalPublishedDate = publishedDate;
+          let finalPublishedDate = publishedDate ? this.parseAndFormatDate(publishedDate) : null;
           
           if (!finalPublishedDate && this.aiClient) {
             try {
               this.addLog('INFO', `Using AI to extract published date for: ${originalItem.title}`);
               
               const dateExtractionPrompt = `You are an expert at extracting published dates from web content. 
+
+              CRITICAL: You MUST return dates in EXACTLY this format: YYYY-MM-DD (e.g., 2024-07-15)
               
               Analyze the following content and extract the published date. Look for:
               - Explicit date mentions in the article
@@ -1063,8 +1065,13 @@ Return ONLY a JSON array of results, no other text.`;
               Content: ${fullText.slice(0, 1000)}
               URL: ${originalItem.url}
               
-              Return ONLY the published date in ISO format (YYYY-MM-DD) or "NOT_FOUND" if no reliable date can be determined.
-              Do not include any explanation, just the date or "NOT_FOUND".`;
+              EXAMPLES of correct format:
+              - "Jul 08, 2025" → 2025-07-08
+              - "January 15, 2024" → 2024-01-15
+              - "2024/03/20" → 2024-03-20
+              
+              Return ONLY the date in YYYY-MM-DD format or "NOT_FOUND" if no reliable date found.
+              NO explanations, NO other text, ONLY the date in YYYY-MM-DD format.`;
               
               const dateResponse = await this.aiClient.chat.completions.create({
                 model: this.config.useAzureOpenAI ? 'gpt-4' : 'gpt-4',
@@ -1083,9 +1090,15 @@ Return ONLY a JSON array of results, no other text.`;
               });
               
               const extractedDate = dateResponse.choices[0]?.message?.content?.trim() || '';
-              if (extractedDate && extractedDate !== 'NOT_FOUND' && /^\d{4}-\d{2}-\d{2}$/.test(extractedDate)) {
-                finalPublishedDate = extractedDate;
-                this.addLog('SUCCESS', `AI extracted published date: ${finalPublishedDate}`);
+              if (extractedDate && extractedDate !== 'NOT_FOUND') {
+                // Use the new date parser to handle various formats
+                const parsedDate = this.parseAndFormatDate(extractedDate);
+                if (parsedDate) {
+                  finalPublishedDate = parsedDate;
+                  this.addLog('SUCCESS', `AI extracted and parsed published date: ${extractedDate} → ${finalPublishedDate}`);
+                } else {
+                  this.addLog('WARNING', `AI extracted date but could not parse format: ${extractedDate} for: ${originalItem.title}`);
+                }
               } else {
                 this.addLog('WARNING', `AI could not extract reliable published date for: ${originalItem.title}`);
               }
@@ -1327,6 +1340,76 @@ Return ONLY a JSON array of results, no other text.`;
 
   private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  private parseAndFormatDate(dateString: string): string | null {
+    if (!dateString || dateString === 'NOT_FOUND') {
+      return null;
+    }
+
+    // If already in correct format, return as-is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+
+    try {
+      // Handle various date formats
+      let parsedDate: Date;
+
+      // Try parsing common formats
+      const formats = [
+        // ISO formats
+        /^\d{4}-\d{2}-\d{2}T/, // ISO with time
+        /^\d{4}\/\d{2}\/\d{2}/, // YYYY/MM/DD
+        /^\d{2}\/\d{2}\/\d{4}/, // MM/DD/YYYY
+        /^\d{2}-\d{2}-\d{4}/, // MM-DD-YYYY
+        /^\d{4}\.\d{2}\.\d{2}/, // YYYY.MM.DD
+      ];
+
+      // Month name formats (Jul 08, 2025, July 8, 2025, etc.)
+      const monthNameRegex = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})/i;
+      const monthNameMatch = dateString.match(monthNameRegex);
+      
+      if (monthNameMatch) {
+        const monthMap: { [key: string]: string } = {
+          'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04',
+          'may': '05', 'jun': '06', 'jul': '07', 'aug': '08',
+          'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
+        };
+        
+        const month = monthMap[monthNameMatch[1].toLowerCase().substring(0, 3)];
+        const day = monthNameMatch[2].padStart(2, '0');
+        const year = monthNameMatch[3];
+        
+        if (month && year) {
+          return `${year}-${month}-${day}`;
+        }
+      }
+
+      // Try JavaScript's Date parsing as fallback
+      parsedDate = new Date(dateString);
+      
+      // Check if the date is valid
+      if (isNaN(parsedDate.getTime())) {
+        return null;
+      }
+
+      // Format to ISO date string (YYYY-MM-DD)
+      const year = parsedDate.getFullYear();
+      const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(parsedDate.getDate()).padStart(2, '0');
+      
+      // Validate the parsed date is reasonable (not too far in future/past)
+      const currentYear = new Date().getFullYear();
+      if (year < 1990 || year > currentYear + 2) {
+        return null;
+      }
+
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.warn(`Failed to parse date: ${dateString}`, error);
+      return null;
+    }
   }
 }
 

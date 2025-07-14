@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Lambda deployment files and archives
+*.zip
+*.tar.gz
+lambda/playwright-layer/
+lambda/lambda-package/
+lambda/minimal-package/
+lambda/

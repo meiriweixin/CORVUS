@@ -411,6 +411,178 @@ app.get('/api/articles', async (req, res) => {
   }
 });
 
+// Schedule management endpoints
+interface ScheduleConfig {
+  id: string;
+  name: string;
+  urls: string[];
+  frequency: 'daily' | 'weekly' | 'monthly';
+  time: string;
+  dayOfWeek?: number;
+  dayOfMonth?: number;
+  timezone: string;
+  enabled: boolean;
+  crawlerConfig: {
+    maxRequestsPerCrawl: number;
+    enableAI: boolean;
+    enableScreenshots: boolean;
+    maxConcurrency: number;
+  };
+  lastRun?: string;
+  nextRun?: string;
+  status: 'active' | 'paused' | 'error' | 'running';
+  createdAt: string;
+  updatedAt: string;
+}
+
+// In-memory storage for schedules (you can replace with database later)
+let schedules: ScheduleConfig[] = [];
+
+// Get all schedules
+app.get('/api/schedules', (req, res) => {
+  res.json(schedules);
+});
+
+// Create new schedule
+app.post('/api/schedules', (req, res) => {
+  try {
+    const scheduleData = req.body;
+    const newSchedule: ScheduleConfig = {
+      ...scheduleData,
+      id: scheduleData.id || Date.now().toString(),
+      status: 'active',
+      createdAt: scheduleData.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    schedules.push(newSchedule);
+    console.log('Created new schedule:', newSchedule.name);
+    res.status(201).json(newSchedule);
+  } catch (error) {
+    console.error('Error creating schedule:', error);
+    res.status(500).json({
+      error: 'Failed to create schedule',
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
+// Update schedule
+app.put('/api/schedules/:id', (req, res) => {
+  try {
+    const scheduleId = req.params.id;
+    const updateData = req.body;
+    
+    const scheduleIndex = schedules.findIndex(s => s.id === scheduleId);
+    if (scheduleIndex === -1) {
+      return res.status(404).json({ error: 'Schedule not found' });
+    }
+    
+    schedules[scheduleIndex] = {
+      ...schedules[scheduleIndex],
+      ...updateData,
+      id: scheduleId,
+      updatedAt: new Date().toISOString()
+    };
+    
+    console.log('Updated schedule:', schedules[scheduleIndex].name);
+    res.json(schedules[scheduleIndex]);
+  } catch (error) {
+    console.error('Error updating schedule:', error);
+    res.status(500).json({
+      error: 'Failed to update schedule',
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
+// Delete schedule
+app.delete('/api/schedules/:id', (req, res) => {
+  try {
+    const scheduleId = req.params.id;
+    const initialLength = schedules.length;
+    
+    schedules = schedules.filter(s => s.id !== scheduleId);
+    
+    if (schedules.length === initialLength) {
+      return res.status(404).json({ error: 'Schedule not found' });
+    }
+    
+    console.log('Deleted schedule:', scheduleId);
+    res.json({ success: true, message: 'Schedule deleted' });
+  } catch (error) {
+    console.error('Error deleting schedule:', error);
+    res.status(500).json({
+      error: 'Failed to delete schedule',
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
+// Toggle schedule enabled/disabled
+app.post('/api/schedules/:id/toggle', (req, res) => {
+  try {
+    const scheduleId = req.params.id;
+    const { enabled } = req.body;
+    
+    const schedule = schedules.find(s => s.id === scheduleId);
+    if (!schedule) {
+      return res.status(404).json({ error: 'Schedule not found' });
+    }
+    
+    schedule.enabled = enabled;
+    schedule.status = enabled ? 'active' : 'paused';
+    schedule.updatedAt = new Date().toISOString();
+    
+    console.log(`Toggled schedule ${schedule.name}: ${enabled ? 'enabled' : 'disabled'}`);
+    res.json(schedule);
+  } catch (error) {
+    console.error('Error toggling schedule:', error);
+    res.status(500).json({
+      error: 'Failed to toggle schedule',
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
+// Run schedule now
+app.post('/api/schedules/:id/run', async (req, res) => {
+  try {
+    const scheduleId = req.params.id;
+    
+    const schedule = schedules.find(s => s.id === scheduleId);
+    if (!schedule) {
+      return res.status(404).json({ error: 'Schedule not found' });
+    }
+    
+    // Update schedule status
+    schedule.status = 'running';
+    schedule.lastRun = new Date().toISOString();
+    schedule.updatedAt = new Date().toISOString();
+    
+    console.log(`Running schedule now: ${schedule.name}`);
+    
+    // TODO: Integrate with Lambda function here
+    // For now, simulate running
+    setTimeout(() => {
+      schedule.status = 'active';
+      console.log(`Schedule completed: ${schedule.name}`);
+    }, 5000);
+    
+    res.json({ 
+      success: true, 
+      message: 'Schedule started',
+      schedule: schedule
+    });
+  } catch (error) {
+    console.error('Error running schedule:', error);
+    res.status(500).json({
+      error: 'Failed to run schedule',
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
 // Study analysis endpoint
 app.post('/api/study/analyze', async (req, res) => {
   try {

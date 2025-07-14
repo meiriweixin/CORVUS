@@ -6,6 +6,7 @@ import { ProcessedResultsDisplay } from './components/ProcessedResultsDisplay';
 import { Dashboard } from './components/Dashboard';
 import { Study } from './components/Study';
 import { Chat } from './components/Chat';
+import { Scheduler } from './components/Scheduler';
 import { Layout } from './components/Layout';
 import { GlowEffect } from './components/ui/glow-effect';
 import { crawlerService } from './services/websocketService';
@@ -34,7 +35,7 @@ interface AppState {
 }
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'crawler' | 'study' | 'chat'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'crawler' | 'study' | 'chat' | 'scheduler'>('dashboard');
   const [activeTab, setActiveTab] = useState<'input' | 'progress' | 'results'>('input');
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [resultsTab, setResultsTab] = useState<'filtered' | 'processed'>('filtered');
@@ -350,6 +351,8 @@ export function App() {
         <Study />
       ) : currentView === 'chat' ? (
         <Chat />
+      ) : currentView === 'scheduler' ? (
+        <Scheduler />
       ) : (
         <div className="container mx-auto px-4 py-2">
           <div className="max-w-7xl mx-auto">

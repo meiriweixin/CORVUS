@@ -16,8 +16,8 @@ interface LayoutProps {
   navItems?: NavItem[];
   activeTabIndex?: number;
   onTabChange?: (index: number) => void;
-  currentView?: 'dashboard' | 'crawler' | 'study' | 'chat';
-  onViewChange?: (view: 'dashboard' | 'crawler' | 'study' | 'chat') => void;
+  currentView?: 'dashboard' | 'crawler' | 'study' | 'chat' | 'scheduler';
+  onViewChange?: (view: 'dashboard' | 'crawler' | 'study' | 'chat' | 'scheduler') => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({

@@ -5,8 +5,8 @@ interface SidebarProps {
   isConnected: boolean;
   isConnecting: boolean;
   connectionError?: string;
-  currentView?: 'dashboard' | 'crawler' | 'study' | 'chat';
-  onViewChange?: (view: 'dashboard' | 'crawler' | 'study' | 'chat') => void;
+  currentView?: 'dashboard' | 'crawler' | 'study' | 'chat' | 'scheduler';
+  onViewChange?: (view: 'dashboard' | 'crawler' | 'study' | 'chat' | 'scheduler') => void;
 }
 
 export const Sidebar = ({ 
@@ -38,9 +38,9 @@ export const Sidebar = ({
     onClick: () => onViewChange?.('chat')
   }, {
     icon: <SettingsIcon size={20} />,
-    label: 'Settings',
-    active: false,
-    onClick: () => {}
+    label: 'Scheduler',
+    active: currentView === 'scheduler',
+    onClick: () => onViewChange?.('scheduler')
   }];
   
   return (

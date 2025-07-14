@@ -1,0 +1,9 @@
+{
+	"id": "nln4Gfj8ZtIwMEw",
+	"json": "{\"id\":\"nln4Gfj8ZtIwMEw\",\"url\":\"https://www.bleepingcomputer.com/\",\"loadedUrl\":\"https://www.bleepingcomputer.com/\",\"uniqueKey\":\"https://www.bleepingcomputer.com\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-07-14T00:56:47.770Z\"}",
+	"method": "GET",
+	"orderNo": null,
+	"retryCount": 0,
+	"uniqueKey": "https://www.bleepingcomputer.com",
+	"url": "https://www.bleepingcomputer.com/"
+}

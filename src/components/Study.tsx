@@ -13,6 +13,7 @@ import {
   BarChart3,
   Network
 } from 'lucide-react';
+import { ButtonColorful } from '@/components/ui/button-colorful';
 import { 
   ReactFlow, 
   Node, 
@@ -768,18 +769,19 @@ export const Study = () => {
                   {isArticleSelectionCollapsed ? 'Show Selection' : 'Hide Selection'}
                 </button>
               )}
-              <button
-                onClick={handleGenerate}
-                disabled={selectedArticles.length === 0 || isAnalyzing}
-                className="flex items-center gap-2 px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg transition-colors"
-              >
-                {isAnalyzing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Brain className="h-4 w-4" />
-                )}
-                {isAnalyzing ? 'Analyzing...' : 'Generate Study'}
-              </button>
+              {isAnalyzing ? (
+                <div className="flex items-center gap-2 px-6 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  <span className="text-white font-medium">Analyzing...</span>
+                </div>
+              ) : (
+                <ButtonColorful
+                  onClick={handleGenerate}
+                  disabled={selectedArticles.length === 0}
+                  label="Generate Study"
+                  className="px-6 py-2"
+                />
+              )}
             </div>
           </div>
 

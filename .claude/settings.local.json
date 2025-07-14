@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(Compress-Archive -Path ./* -DestinationPath ./crawler-lambda.zip -Force)",
+      "Bash(powershell:*)",
+      "Bash(aws lambda update-function-code:*)",
+      "Bash(ls:*)",
+      "Bash(zip:*)",
+      "Bash(tar:*)",
+      "Bash(aws lambda update-function-configuration:*)",
+      "Bash(aws lambda invoke:*)",
+      "Bash(cat:*)",
+      "Bash(rm:*)",
+      "Bash(npm ls:*)",
+      "Bash(find:*)",
+      "Bash(python:*)",
+      "Bash(aws s3 cp:*)",
+      "Bash(aws lambda delete-function:*)",
+      "Bash(aws:*)",
+      "Bash(cp:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(grep:*)"
+    ],
+    "deny": []
+  }
+}
