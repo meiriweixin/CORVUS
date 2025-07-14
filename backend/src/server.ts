@@ -14,14 +14,15 @@ const app = express();
 const server = createServer(app);
 const io = new SocketIOServer<WebSocketEvents>(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: [process.env.FRONTEND_URL || "http://localhost:5173", "https://corvus-blue.vercel.app"],
     methods: ["GET", "POST"]
   }
 });
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173"
+  origin: [process.env.FRONTEND_URL || "http://localhost:5173", "https://corvus-blue.vercel.app"],
+  methods: ["GET", "POST"]
 }));
 app.use(express.json({ limit: '50mb' }));
 
